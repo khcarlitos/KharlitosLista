@@ -6,8 +6,6 @@ import asyncio
 # git config --local credential.helper ""
 
 
-
-
 def main():
     asyncio.run(export_messages())
     
@@ -22,7 +20,7 @@ async def export_messages(export_file = "base.txt"):
             channel_dict = update_channel_dict(cleansed_content, channel_dict)
         except Exception as e:
             print("exportMessages : ERROR :", e)
-            sys.exit(0)
+            sys.exit(1)
             
         export_channels(channel_dict, export_file)
     
@@ -57,7 +55,9 @@ def update_channel_dict(message_content, channel_dict):
             elif "DAZN F1 720" in channel_name:
                 channel_name = "DAZN F1 720"
             elif "SmartBanck" in channel_name:
-                channel_name = channel_name.replace("SmartBanck", "Smartbank")
+                channel_name = channel_name.replace("SmartBanck", "Hypermotion")
+            elif "Smartbank" in channel_name:
+                channel_name = channel_name.replace("Smartbank", "Hypermotion")
             elif "La1" in channel_name:
                 channel_name = channel_name.replace("La1", "La 1")
             elif "LA 1" in channel_name:
@@ -70,6 +70,15 @@ def update_channel_dict(message_content, channel_dict):
                 channel_name = channel_name.replace("BarÃ§a", "Barça")
             elif "beIN SPORTS Ã±" in channel_name:
                 channel_name = channel_name.replace("beIN SPORTS Ã±", "beIN SPORTS ñ")
+            elif "Golf" in channel_name:
+                if "mex" in channel_name:
+                    channel_name = channel_name.replace("mex", "Channel")
+            elif "M.L. Campeones 2" in channel_name:
+                channel_name = channel_name.replace("M.L. Campeones 2", "M+ Champions Tour")
+            #elif "M.L. Campeones" in channel_name:
+                #channel_name = channel_name.replace("M.L. Campeones", "M+ Liga de Campeones")
+            #elif "#Vamos" in channel_name:
+                #channel_name = channel_name.replace("#Vamos", "M+ #Vamos")
                 
             channel_dict[channel_id] = channel_name
             
@@ -91,25 +100,46 @@ def export_channels(channel_dict, export_file):
                         "channel_id": channel_id,
                         "channel_name": channel_name + "  " + identif}
         channel_list.append(channel_info)
-        
+
+    # CANALES AÑADIDOS FUERA DE elcano
+    #channel_list.append({'group_title': 'DAZN F1', 'tvg_id': 'DAZN F1 HD','logo': 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/012018/untitled-1_20.png?An9Fa1zRO4z6Dj__EVR4da6YOWsvtEw2&itok=6PiLMTa5', 'channel_id': '018186e9a5b942e3a5d8c24ca906ded64c2bbbe4', 'channel_name': 'F1 Multicámara by Álex'})
+    channel_list.append({'group_title': 'DAZN F1', 'tvg_id': '','logo': 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/012018/untitled-1_20.png?An9Fa1zRO4z6Dj__EVR4da6YOWsvtEw2&itok=6PiLMTa5', 'channel_id': 'https://www.f1-tempo.com/', 'channel_name': 'F1 Tempo Telemetría'})
+    channel_list.append({'group_title': 'electroperra', 'tvg_id': 'HISTORIA', 'logo': 'https://www.movistarplus.es/recorte/m-NEO/canal/HIST.png', 'channel_id': 'http://mol-2.com:8080/play/live.php?mac=00:1A:79:C3:AF:36&stream=55609&extension=ts&play_token=ltn2GgE1z6', 'channel_name': 'Historia'})
+    channel_list.append({'group_title': 'electroperra', 'tvg_id': 'NAT GEO WILD HD', 'logo': 'https://www.movistarplus.es/recorte/m-NEO/canal/NATGW.png', 'channel_id': 'http://mol-2.com:8080/play/live.php?mac=00:1A:79:C3:AF:36&stream=55611&extension=ts&play_token=ltn2GgE1z6', 'channel_name': 'Nat Geo Wild'})
+    channel_list.append({'group_title': 'electroperra', 'tvg_id': 'NAT GEO HD', 'logo': 'https://www.movistarplus.es/recorte/m-NEO/canal/NATGEO.png', 'channel_id': 'http://mol-2.com:8080/play/live.php?mac=00:1A:79:C3:AF:36&stream=55613&extension=ts&play_token=ltn2GgE1z6', 'channel_name': 'National Geographic'})
+
     all_channels = ""
     all_channels += '#EXTM3U url-tvg="https://raw.githubusercontent.com/davidmuma/EPG_dobleM/master/guia.xml, https://raw.githubusercontent.com/acidjesuz/EPG/master/guide.xml"\n'
+    #all_channels += '#EXTINF:-1 tvg-logo="https://logodownload.org/wp-content/uploads/2017/11/telegram-logo-0-2.png" ,HACKS LOVE + ROBOTS\nhttps://t.me/+__T5lqenMkcwMzdk\n'
+    #all_channels += '#EXTINF:-1 tvg-logo="https://telegra.ph/file/fba058a81f4038f75c076.jpg" ,Rally de Estonia by Álex\nacestream://4b4e4277ee6b7f3041cf7d1a708862b3330b1b4b\n'
+    #all_channels += '#EXTINF:-1 tvg-logo="https://telegra.ph/file/fba058a81f4038f75c076.jpg" ,Wimbledon UHD by Ronki\nacestream://78aa81aedb1e2b6a9ba178398148940857155f6a\n'
+    #all_channels += '#EXTINF:-1 tvg-id="I401.1229.tvguide.co.uk" tvg-logo="https://telegra.ph/file/fba058a81f4038f75c076.jpg" ,Sky Sports Main Event\nacestream://eab7aeef0218ce8b0752e596e4792b69eda4df5e\n'
+    #all_channels += '#EXTINF:-1 tvg-logo="https://telegra.ph/file/fba058a81f4038f75c076.jpg" ,Sky Sports Arena\nacestream://d317a003e8047da2c36a2a2bb2289578c9a3b79c\n'
+
+    
     channel_pattern = '#EXTINF:-1 group-title="GROUPTITLE" tvg-id="TVGID" tvg-logo="LOGO" ,CHANNELTITLE\nacestream://CHANNELID\n'
-    #channel_pattern = '#EXTINF:-1 group-title="GROUPTITLE" tvg-id="TVGID" tvg-logo="LOGO" ,CHANNELTITLE\nhttp://127.0.0.1:6878/ace/getstream?id=CHANNELID\n'
+    channel_pattern_http = '#EXTINF:-1 group-title="GROUPTITLE" tvg-id="TVGID" tvg-logo="LOGO" ,CHANNELTITLE\nCHANNELID\n'
 
     for group_title in u.group_title_order:
         for channel_info in channel_list:
             if channel_info["group_title"] == group_title:
-                all_channels += channel_pattern.replace("GROUPTITLE", channel_info["group_title"]) \
+                if "http" in channel_info["channel_id"]:
+                    ch_pattern = channel_pattern_http
+                else:
+                    ch_pattern = channel_pattern
+                channel = ch_pattern.replace("GROUPTITLE", channel_info["group_title"]) \
                                                .replace("TVGID", channel_info["tvg_id"]) \
                                                .replace("LOGO", channel_info["logo"]) \
                                                .replace("CHANNELID", channel_info["channel_id"]) \
                                                .replace("CHANNELTITLE", channel_info["channel_name"])
+                all_channels += channel
 
     if all_channels != "":
         
         all_channels_kodi = all_channels.replace("acestream://", "plugin://script.module.horus?action=play&id=")
         all_channels_get = all_channels.replace("acestream://", "http://127.0.0.1:6878/ace/getstream?id=")
+        all_channels_int = all_channels.replace("acestream://", "http://192.168.1.90:8008/ace/getstream?id=")
+
 
 
         with open(export_file, "w") as f:
@@ -126,6 +156,11 @@ def export_channels(channel_dict, export_file):
             g.write(all_channels_get)
             print("exportChannels : OK : get list exported to Github")
             g.close()
+            
+        with open("int.txt", "w") as int:
+            int.write(all_channels_int)
+            print("exportChannels : OK : int list exported to Github")
+            int.close()
             
     else:
         print("exportChannels : ERROR : list is empty")
